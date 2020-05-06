@@ -13,8 +13,8 @@ In213 - projet
 
 # Etapes du projet
 
-1. Lexeur (parser)
-2. Analyseur syntaxique
+1. Lexeur (parser) le .mll
+2. Analyseur syntaxique le .mly et .ml si voulu
 3. Sémantique
 4. Ajouter des fonctions (ex : génération d'une matrice diago)
 

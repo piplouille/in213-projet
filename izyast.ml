@@ -1,0 +1,1 @@
+(* Définition du type OCaml des arbres de syntaxe abstraite *)

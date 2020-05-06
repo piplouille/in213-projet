@@ -30,32 +30,33 @@ But :
 ## Lexeur et parser
 
 règles : definir retour à la ligne, sous windows newline yen a deux possibles
+
 règle de lexing principale :
-    qund j'ai un blanc, je jette
-    les entiers naturels : chiffre au moins une fois
-    cas des identificateurs :
-        mots clefs ET noms de vaiables : je vérifie si chaine est un de mes mots clefs, sinon je renvoie que c'est un ident
-    cas des = etc
-    puis cas des chaines (pareil pour les commentaires) :
+* qund j'ai un blanc, je jette
+* les entiers naturels : chiffre au moins une fois
+* cas des identificateurs :
+    * mots clefs ET noms de vaiables : je vérifie si chaine est un de mes mots clefs, sinon je renvoie que c'est un ident
+* cas des = etc
+* puis cas des chaines (pareil pour les commentaires) :
         dès qu'on repère ", on la met dans un buffer : comme ça, pas de concaténation de chaines
         in string peut être simplifiée complètement (virer 103-119), _ as c (n'importe quoi hors fin de chaine) alors je stocke
     
 
 
-Considérer que [[matrice]], dans le texte qui enrobe : pas de crochets
+Considérer que [[matrice]], dans le texte qui enrobe : pas de crochets ; 
 si j'ai du texte, règle principale, si balise, règle à part
 
 main appelle le parser, c'est lui qui décide d'appeler le lexeur
 
 en c, le parser est dans un état ù il est en plein milie d'une expr, il demande prochain token
-lexer donne if
-parser dit envoie le suivant
-lexer donne suivant, et c'est ( i lcontinue, sinon syntaxe error
+lexer donne if ;
+parser dit envoie le suivant ;
+lexer donne suivant, et c'est ( i lcontinue, sinon syntaxe error ;
 yacc = parser
 
-lexeur renvoie lexem dont le type est défini par paseur
-pcfparse.mly : description qui permt de dire ce que parseur peut obtenir
-occamlyacc : quand il compile mly, il voit déclaration token et génère type caml qi y correspond
+lexeur renvoie lexem dont le type est défini par paseur ;
+pcfparse.mly : description qui permt de dire ce que parseur peut obtenir ;
+occamlyacc : quand il compile mly, il voit déclaration token et génère type caml qi y correspond ;
 on le retrouve dans pcfparse.mly
 
 pcflex.mll : ce qu'on retrouve, ce sont ces types ^
@@ -65,14 +66,14 @@ pcflex.mll : ce qu'on retrouve, ce sont ces types ^
 si lexeur déconne, on va le voir et corriger facilement
 lexeur sera standard
 pcfast.ml : c'est pour alléger le main,
-    représente arbre de syntaxe issu du parsing
-    parser ne fait pas qu ereconnaitre bonne formation des phrases, il construit qq chose
-    trouver les noeuds de l'arbre : dépend du périmètre de ce qu'on veut écrire 
-        structure de langage pauvre => arbre simple
-        begin formula, end formula, [matrice] si à l'intérieur je mets n'imp, structure syntaxique simple
-            puisque doc = texte banal ou début formule contenant tableau avec du texte banal ou intégrale dans aquelle texte banal
-            dans latex, n peut mettre ce qu'on veut, les trous dans la structure, du blabla
-            structure rigide, on accepte tout, mais éléments lexicaux jouent quand même
+* représente arbre de syntaxe issu du parsing
+* parser ne fait pas qu ereconnaitre bonne formation des phrases, il construit qq chose
+* trouver les noeuds de l'arbre : dépend du périmètre de ce qu'on veut écrire 
+    * structure de langage pauvre => arbre simple
+    * begin formula, end formula, [matrice] si à l'intérieur je mets n'imp, structure syntaxique simple
+        * puisque doc = texte banal ou début formule contenant tableau avec du texte banal ou intégrale dans aquelle texte banal
+        * dans latex, n peut mettre ce qu'on veut, les trous dans la structure, du blabla
+        * structure rigide, on accepte tout, mais éléments lexicaux jouent quand même
                 [[e,a,f][a,e,f]], le e, a, f c'est du blabla mais qui lexicalement ne contient pas de crochets
                 dans une matrice, il peut y avoir une séquence de soit "blabla" soit une matrice
                 on peut interdir que tableau contienne liste tableau ou liste blabla, mais pas les deux

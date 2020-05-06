@@ -69,8 +69,6 @@ rule lex = parse
   | '"'   { reset_string_buffer();
             in_string lexbuf;
             STRING (get_stored_string()) }
-  | "//"  { in_cpp_comment lexbuf }
-  | "/*"  { in_c_comment lexbuf }
   | eof   { raise Eoi }
   | _  as c { Printf.eprintf "Invalid char `%c'\n%!" c ; lex lexbuf }
 

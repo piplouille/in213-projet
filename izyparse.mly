@@ -1,3 +1,3 @@
 /*
-le parser
+le parser, on définit ici tous nos mots
 */

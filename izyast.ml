@@ -26,5 +26,5 @@ let rec print oc = function
     | EBinop (op,e1,e2) ->
         Printf.fprintf oc "(%a %s %a)" print e1 op print e2
     | EMonop (op,e) -> Printf.fprintf oc "%s%a" op print e
-    | Esuite (u, n, e) -> Printf.fprintf oc "(%a)_%s€%s" print u n e
+    | ESuite (u, n, e) -> Printf.fprintf oc "(%a)_%s€%s" print u n e
 ;;

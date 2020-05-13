@@ -6,7 +6,7 @@ On séparera en deux cas notre rule : dans le texte, et dans une formule
     (* prélude 
     fonctions pour gérer les chînes de caractères : les backslash etc
     on peut simplifier si on n'a pas besoin *)
-    open Pcfparse ;;
+    open Izyparse ;;
     exception Eoi ;;
 
     let pc c = Printf.eprintf "Lu '%c'\n%!" c;;
@@ -66,17 +66,14 @@ rule lex = parse
   | "->"  { ARROW }
   | '('   { LPAR }
   | ')'   { RPAR }
-  | '"'   { reset_string_buffer();
-            in_string lexbuf;
-            STRING (get_stored_string()) }
   | eof   { raise Eoi }
   | _  as c { Printf.eprintf "Invalid char `%c'\n%!" c ; lex lexbuf }
 
 and in_formule = parse
-    '\end'
+    "/end"
       { () }
   | eof
       { raise Eoi }
   | _ as c
-      { store_string_char c; in_string lexbuf }
+      { in_formule lexbuf }
 

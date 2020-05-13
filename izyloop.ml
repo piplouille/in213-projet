@@ -3,7 +3,7 @@ let version = "(╯°□°）╯︵ ┻━┻";;
 let usage () =
   let _ =
     Printf.eprintf
-      "Usage: %s [file]\n\tRead a PCF program from file (default is stdin)\n%!"
+      "Usage: %s [file]\n\tRead an izy program from file (default is stdin)\n%!"
     Sys.argv.(0) in
   exit 1
 ;;
@@ -27,9 +27,9 @@ let main() =
   while true do
     try
       let _ = Printf.printf  "> %!" in
-      let e = Pcfparse.main Izylex.lex lexbuf in
+      let e = Izyparse.main Izylex.lex lexbuf in
       let _ = Printf.printf "Recognized: " in
-      let _ = Pcfast.print stdout e in
+      let _ = Izyast.print stdout e in
       Printf.printf "\n%!"
     with
       Izylex.Eoi -> Printf.printf  "Bye bye.\n%!" ; exit 0

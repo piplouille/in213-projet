@@ -4,7 +4,7 @@ In213 - projet
 
 # Principe de mon langage
 
-> Passer d'une écriture simplifiée à un format LaTeX, plus précisément les formules mathématiques
+> Passer d'une écriture simplifiée à un format LaTeX, plus particulièrement les formules mathématiques
 
 * Différencier le texte de formules (balises)
 * Ecrire des équations et des systèmes d'équation

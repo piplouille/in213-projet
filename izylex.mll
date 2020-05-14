@@ -44,15 +44,18 @@ let newline = ('\010' | '\013' | "\013\010")
 rule lex = parse
     (' ' | '\t' | newline )
       { lex lexbuf }     (* on passe les espaces *)
-  | ['0'-'9']+ as lxm
-      { INT(int_of_string lxm) }
+  | '"' {
+      reset_string_buffer();
+      in_text lexbuf;
+      STRING (get_stored_string());
+  }
   | "/formule" {in_formule lexbuf}
   | ";"   { SEMICOLON }
   | eof   { raise Eoi }
   | _  as c { Printf.eprintf "Invalid char `%c'\n%!" c ; lex lexbuf }
 
 and in_text = parse
-    "/formule" { in_formule lexbuf }
+    '"' { () }
     | newline as s
         { for i = 0 to String.length s - 1 do
             store_string_char s.[i];
@@ -67,6 +70,8 @@ and in_text = parse
 and in_formule = parse
     "/end"
         { () }
+    | ['0'-'9']+ as lxm
+      { INT(int_of_string lxm) }
     | [ 'A'-'Z' 'a'-'z' ] [ 'A'-'Z' 'a'-'z' ]* as lxm
         { match lxm with
             |"congru" -> CONGRU

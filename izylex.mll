@@ -48,22 +48,12 @@ rule lex = parse
       { INT(int_of_string lxm) }
   | [ 'A'-'Z' 'a'-'z' ] [ 'A'-'Z' 'a'-'z' ]* as lxm
       { match lxm with
-          "let" -> LET
-        | "rec" -> REC
-        | "in" -> IN
-        | "fun" -> FUN
-        | "if" -> IF
-        | "then" -> THEN
-        | "else" -> ELSE
-        | "true" -> TRUE
-        | "false" -> FALSE
         | _ -> IDENT(lxm) }
   | "="   { EQUAL }
   | ">"   { GREATER} | "<"  { SMALLER }
   | ">="  { GREATEREQUAL} | "<="  { SMALLEREQUAL }
   | "+"   { PLUS } | "-"   { MINUS } | "*" { MULT } | "/" { DIV }
   | ";"   { SEMICOLON }
-  | "->"  { ARROW }
   | '('   { LPAR }
   | ')'   { RPAR }
   | eof   { raise Eoi }
@@ -74,6 +64,6 @@ and in_formule = parse
       { () }
   | eof
       { raise Eoi }
-  | _ as c
+  | _ 
       { in_formule lexbuf }
 

@@ -46,41 +46,41 @@ rule lex = parse
       { lex lexbuf }     (* on passe les espaces *)
   | ['0'-'9']+ as lxm
       { INT(int_of_string lxm) }
-  | [ 'A'-'Z' 'a'-'z' ] [ 'A'-'Z' 'a'-'z' ]* as lxm
-      { match lxm with
-          "congru" -> CONGRU
-        | "modulo" -> MODULO
-        | "dans" -> APPARTIENT
-        | "/formule" -> in_formule lexbuf
-        | _ -> IDENT(lxm) }
-  | "="   { EQUAL }
-  | ">"   { GREATER} | "<"  { SMALLER }
-  | ">="  { GREATEREQUAL} | "<="  { SMALLEREQUAL }
-  | "+"   { PLUS } | "-"   { MINUS } | "*" { MULT } | "/" { DIV }
+  | "/formule" {in_formule lexbuf}
   | ";"   { SEMICOLON }
-  | '('   { LPAR }
-  | ')'   { RPAR }
   | eof   { raise Eoi }
   | _  as c { Printf.eprintf "Invalid char `%c'\n%!" c ; lex lexbuf }
 
 and in_text = parse
-    | "/formule" -> in_formule lexbuf
+    "/formule" { in_formule lexbuf }
     | newline as s
         { for i = 0 to String.length s - 1 do
             store_string_char s.[i];
         done;
-        in_string lexbuf
+        in_text lexbuf
         }
     | eof
         { raise Eoi }
     | _ as c
-        { store_string_char c; in_string lexbuf }
+        { store_string_char c; in_text lexbuf }
 
 and in_formule = parse
     "/end"
-      { () }
+        { () }
+    | [ 'A'-'Z' 'a'-'z' ] [ 'A'-'Z' 'a'-'z' ]* as lxm
+        { match lxm with
+            |"congru" -> CONGRU
+            | "modulo" -> MODULO
+            | "dans" -> APPARTIENT
+            | _ -> IDENT(lxm)
+        }
+  | '('   { LPAR }
+  | ')'   { RPAR }
+  | "="   { EQUAL }
+  | ">"   { GREATER} | "<"  { SMALLER }
+  | ">="  { GREATEREQUAL} | "<="  { SMALLEREQUAL }
+  | "+"   { PLUS } | "-"   { MINUS } | "*" { MULT } | "/" { DIV }
   | eof
       { raise Eoi }
   | _ 
       { in_formule lexbuf }
-

@@ -6,17 +6,16 @@ le parser, on définit ici tous nos mots
   open Izyast;;
 %}
 
+%token <string> STRING
 %token <int> INT
 %token <string> IDENT
-%token TRUE FALSE
-%token <string> STRING
-%token PLUS MINUS MULT DIV EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
+%token CONGRU MODULO
+%token PLUS MINUS MULT DIV DIVISIBLE EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
 %token LPAR RPAR SEMICOLON
-%token LET REC IN FUN ARROW
-%token IF THEN ELSE
 %left EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
 %left PLUS MINUS
 %left MULT DIV
+%left DIVISIBLE
 
 %start main
 %type <Izyast.expr> main

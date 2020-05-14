@@ -1,0 +1,11 @@
+*~
+*.cmo
+*.cmx
+*.o
+*.cmi
+*.cmt
+*.cmti
+izyparse.ml
+izyparse.mli
+izylex.ml
+izyloop

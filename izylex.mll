@@ -48,6 +48,10 @@ rule lex = parse
       { INT(int_of_string lxm) }
   | [ 'A'-'Z' 'a'-'z' ] [ 'A'-'Z' 'a'-'z' ]* as lxm
       { match lxm with
+          "congru" -> CONGRU
+        | "modulo" -> MODULO
+        | "dans" -> APPARTIENT
+        | "/formule" -> in_formule lexbuf
         | _ -> IDENT(lxm) }
   | "="   { EQUAL }
   | ">"   { GREATER} | "<"  { SMALLER }
@@ -58,6 +62,19 @@ rule lex = parse
   | ')'   { RPAR }
   | eof   { raise Eoi }
   | _  as c { Printf.eprintf "Invalid char `%c'\n%!" c ; lex lexbuf }
+
+and in_text = parse
+    | "/formule" -> in_formule lexbuf
+    | newline as s
+        { for i = 0 to String.length s - 1 do
+            store_string_char s.[i];
+        done;
+        in_string lexbuf
+        }
+    | eof
+        { raise Eoi }
+    | _ as c
+        { store_string_char c; in_string lexbuf }
 
 and in_formule = parse
     "/end"

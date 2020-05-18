@@ -24,7 +24,8 @@ le parser, on définit ici tous nos mots
 
 %%
 
-main: expr SEMICOLON { $1 }
+main: FORMULE expr END SEMICOLON { $2 }
+    | STRING SEMICOLON { EString ($1) }
     | SEMICOLON main { $2 }
 ;
 
@@ -32,9 +33,9 @@ main: expr SEMICOLON { $1 }
 /* Grammaire */
 
 expr:
-  FORMULE expr CONGRU expr MODULO expr END { ECongruence ($2, $4, $6) }
-| FORMULE LPAR expr RPAR IDENT APPARTIENT IDENT END { ESuite ($3, $5, $7) }
-| FORMULE arith_expr END { $2 }
+  expr CONGRU expr MODULO expr { ECongruence ($1, $3, $5) }
+| LPAR expr RPAR IDENT APPARTIENT IDENT { ESuite ($2, $4, $6) }
+| arith_expr { $1 }
 | STRING { EString ($1) }
 ;
 

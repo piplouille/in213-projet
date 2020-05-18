@@ -48,7 +48,23 @@ rule lex = parse
     | '"'   { reset_string_buffer();
                 in_string lexbuf;
                 STRING (get_stored_string()) }
-    | "/formule" { Printf.printf "J'entre une formule \n%!" ; in_formule lexbuf }
+    | "/formule" { FORMULE }
+    | "/end" { END }
+    | ['0'-'9']+ as lxm
+      { INT(int_of_string lxm) }
+    | [ 'A'-'Z' 'a'-'z' ]* as lxm
+        { match lxm with
+             "congru" -> CONGRU
+            | "modulo" -> MODULO
+            | "dans" -> APPARTIENT
+            | _ -> IDENT(lxm)
+        }
+    | '('   { LPAR }
+    | ')'   { RPAR }
+    | "="   { EQUAL }
+    | ">"   { GREATER} | "<"  { SMALLER }
+    | ">="  { GREATEREQUAL} | "<="  { SMALLEREQUAL }
+    | "+"   { PLUS } | "-"   { MINUS } | "*" { MULT } | "/" { DIV }
     | eof   { raise Eoi }
     | _  as c { Printf.eprintf "Invalid char `%c'\n%!" c ; lex lexbuf }
 
@@ -65,26 +81,3 @@ and in_string = parse
         { raise Eoi }
     | _ as c
         { store_string_char c; in_string lexbuf }
-
-and in_formule = parse
-    "/end"
-      { Printf.printf "Je sors d'une formule \n%!" ; lex lexbuf }
-    | ['0'-'9']+ as lxm
-      { INT(int_of_string lxm) }
-    | [ 'A'-'Z' 'a'-'z' ]* as lxm
-        { match lxm with
-             "congru" -> CONGRU
-            | "modulo" -> MODULO
-            | "dans" -> APPARTIENT
-            | _ -> IDENT(lxm)
-        }
-    | '('   { LPAR }
-    | ')'   { RPAR }
-    | "="   { EQUAL }
-    | ">"   { GREATER} | "<"  { SMALLER }
-    | ">="  { GREATEREQUAL} | "<="  { SMALLEREQUAL }
-    | "+"   { PLUS } | "-"   { MINUS } | "*" { MULT } | "/" { DIV }
-    | eof
-        { raise Eoi }
-    | _ as c
-        { in_formule lexbuf }

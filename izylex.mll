@@ -71,9 +71,9 @@ and in_formule = parse
       { Printf.printf "Je sors d'une formule \n%!" ; lex lexbuf }
     | ['0'-'9']+ as lxm
       { INT(int_of_string lxm) }
-    | [ 'A'-'Z' 'a'-'z' ] [ 'A'-'Z' 'a'-'z' ]* as lxm
+    | [ 'A'-'Z' 'a'-'z' ]* as lxm
         { match lxm with
-            |"congru" -> CONGRU
+             "congru" -> CONGRU
             | "modulo" -> MODULO
             | "dans" -> APPARTIENT
             | _ -> IDENT(lxm)

@@ -43,33 +43,48 @@ let newline = ('\010' | '\013' | "\013\010")
 
 rule lex = parse
     (' ' | '\t' | newline )
-      { lex lexbuf }     (* on passe les espaces *)
-  | ";"   { SEMICOLON }
-  | '"'   { reset_string_buffer();
-            in_string lexbuf;
-            STRING (get_stored_string()) }
-  | "/formule" { in_formule lexbuf }
-  | eof   { raise Eoi }
-  | _  as c { Printf.eprintf "Invalid char `%c'\n%!" c ; lex lexbuf }
+        { lex lexbuf }     (* on passe les espaces *)
+    | ";"   { SEMICOLON }
+    | '"'   { reset_string_buffer();
+                in_string lexbuf;
+                STRING (get_stored_string()) }
+    | "/formule" { Printf.printf "J'entre une formule \n%!" ; in_formule lexbuf }
+    | eof   { raise Eoi }
+    | _  as c { Printf.eprintf "Invalid char `%c'\n%!" c ; lex lexbuf }
 
 and in_string = parse
     '"'
-      { () }
-  | newline as s
-      { for i = 0 to String.length s - 1 do
-          store_string_char s.[i];
-        done;
-        in_string lexbuf
-      }
-  | eof
-      { raise Eoi }
-  | _ as c
-      { store_string_char c; in_string lexbuf }
+        { () }
+    | newline as s
+        { for i = 0 to String.length s - 1 do
+            store_string_char s.[i];
+            done;
+            in_string lexbuf
+        }
+    | eof
+        { raise Eoi }
+    | _ as c
+        { store_string_char c; in_string lexbuf }
 
 and in_formule = parse
     "/end"
-      { lex lexbuf }
-  | eof
-      { raise Eoi }
-  | _ as c
-      { in_formule lexbuf }
+      { Printf.printf "Je sors d'une formule \n%!" ; lex lexbuf }
+    | ['0'-'9']+ as lxm
+      { INT(int_of_string lxm) }
+    | [ 'A'-'Z' 'a'-'z' ] [ 'A'-'Z' 'a'-'z' ]* as lxm
+        { match lxm with
+            |"congru" -> CONGRU
+            | "modulo" -> MODULO
+            | "dans" -> APPARTIENT
+            | _ -> IDENT(lxm)
+        }
+    | '('   { LPAR }
+    | ')'   { RPAR }
+    | "="   { EQUAL }
+    | ">"   { GREATER} | "<"  { SMALLER }
+    | ">="  { GREATEREQUAL} | "<="  { SMALLEREQUAL }
+    | "+"   { PLUS } | "-"   { MINUS } | "*" { MULT } | "/" { DIV }
+    | eof
+        { raise Eoi }
+    | _ as c
+        { in_formule lexbuf }

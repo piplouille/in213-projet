@@ -19,12 +19,12 @@ type expr =
 ;; *)
 
 let rec print oc = function
-    | EString s -> Printf.fprintf oc "\"%s\"" s
-    | EInt n -> Printf.fprintf oc "%d" n
-    | EIdent s -> Printf.fprintf oc "%s" s
-    | ECongruence (m, p, n) -> Printf.fprintf oc "%a ≡ %a [%a]" print m print p print n
+    | EString s -> Printf.fprintf oc "string \"%s\"" s
+    | EInt n -> Printf.fprintf oc "entier %d" n
+    | EIdent s -> Printf.fprintf oc "identificateur %s" s
+    | ECongruence (m, p, n) -> Printf.fprintf oc "congru %a ≡ %a [%a]" print m print p print n
     | EBinop (op,e1,e2) ->
-        Printf.fprintf oc "(%a %s %a)" print e1 op print e2
-    | EMonop (op,e) -> Printf.fprintf oc "%s%a" op print e
-    | ESuite (u, n, e) -> Printf.fprintf oc "(%a)_%s€%s" print u n e
+        Printf.fprintf oc "binop (%a %s %a)" print e1 op print e2
+    | EMonop (op,e) -> Printf.fprintf oc "monop %s%a" op print e
+    | ESuite (u, n, e) -> Printf.fprintf oc "suite (%a)_%s€%s" print u n e
 ;;

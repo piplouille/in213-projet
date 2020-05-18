@@ -6,6 +6,7 @@ le parser, on définit ici tous nos mots
   open Izyast;;
 %}
 
+%token FORMULE END
 %token <string> STRING
 %token <int> INT
 %token <string> IDENT
@@ -31,10 +32,10 @@ main: expr SEMICOLON { $1 }
 /* Grammaire */
 
 expr:
-  expr CONGRU expr MODULO expr { ECongruence ($1, $3, $5) }
-| LPAR expr RPAR IDENT APPARTIENT IDENT { ESuite ($2, $4, $6) }
-| arith_expr
-         { $1 }
+  FORMULE expr CONGRU expr MODULO expr END { ECongruence ($2, $4, $6) }
+| FORMULE LPAR expr RPAR IDENT APPARTIENT IDENT END { ESuite ($3, $5, $7) }
+| FORMULE arith_expr END { $2 }
+| STRING { EString ($1) }
 ;
 
 arith_expr:

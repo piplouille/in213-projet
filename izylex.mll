@@ -61,6 +61,8 @@ rule lex = parse
         }
     | '('   { LPAR }
     | ')'   { RPAR }
+    | '['   { LCRO }
+    | ']'   { RCRO }
     | "="   { EQUAL }
     | ">"   { GREATER} | "<"  { SMALLER }
     | ">="  { GREATEREQUAL} | "<="  { SMALLEREQUAL }

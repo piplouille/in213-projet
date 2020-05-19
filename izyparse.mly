@@ -12,7 +12,7 @@ le parser, on définit ici tous nos mots
 %token <string> IDENT
 %token CONGRU MODULO
 %token PLUS MINUS MULT DIV DIVISE EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
-%token LPAR RPAR SEMICOLON
+%token LPAR RPAR LCRO RCRO SEMICOLON
 %token APPARTIENT
 %left EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
 %left PLUS MINUS
@@ -35,9 +35,14 @@ main: FORMULE expr END SEMICOLON { $2 }
 expr:
   expr CONGRU expr MODULO expr { ECongruence ($1, $3, $5) }
 | LPAR expr RPAR IDENT APPARTIENT IDENT { ESuite ($2, $4, $6) }
-| arith_expr { $1 }
 | STRING { EString ($1) }
+| LCRO matrice RCRO { EMatrice ([$2]) }
+| arith_expr { $1 }
 ;
+
+matrice:
+  LCRO matrice RCRO { EMatrice ([$2]) }
+| application { $1 }
 
 arith_expr:
   arith_expr EQUAL arith_expr        { EBinop ("=", $1, $3) }

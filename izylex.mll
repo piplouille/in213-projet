@@ -63,6 +63,7 @@ rule lex = parse
     | ')'   { RPAR }
     | '['   { LCRO }
     | ']'   { RCRO }
+    | ','   { VIRGULE }
     | "="   { EQUAL }
     | ">"   { GREATER} | "<"  { SMALLER }
     | ">="  { GREATEREQUAL} | "<="  { SMALLEREQUAL }

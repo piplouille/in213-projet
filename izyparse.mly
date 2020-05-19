@@ -12,7 +12,7 @@ le parser, on définit ici tous nos mots
 %token <string> IDENT
 %token CONGRU MODULO
 %token PLUS MINUS MULT DIV DIVISE EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
-%token LPAR RPAR LCRO RCRO SEMICOLON
+%token LPAR RPAR LCRO RCRO SEMICOLON VIRGULE
 %token APPARTIENT
 %left EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
 %left PLUS MINUS
@@ -36,13 +36,22 @@ expr:
   expr CONGRU expr MODULO expr { ECongruence ($1, $3, $5) }
 | LPAR expr RPAR IDENT APPARTIENT IDENT { ESuite ($2, $4, $6) }
 | STRING { EString ($1) }
-| LCRO matrice RCRO { EMatrice ([$2]) }
+| LCRO in_matrice RCRO { EMatrice ($2) }
+| LCRO RCRO { EMatrice ([]) }
 | arith_expr { $1 }
 ;
 
-matrice:
-  LCRO matrice RCRO { EMatrice ([$2]) }
-| application { $1 }
+/* après une ouverture de matrice, on peut trouver */
+in_matrice:
+| liste { $1 }
+;
+
+liste:
+  application VIRGULE liste { ($1::$3) }
+| application { [$1] }
+| LCRO liste RCRO VIRGULE liste { ((EMatrice ($2))::$5) }
+| LCRO liste RCRO { $2 }
+;
 
 arith_expr:
   arith_expr EQUAL arith_expr        { EBinop ("=", $1, $3) }

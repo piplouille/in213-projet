@@ -1,10 +1,10 @@
 # Compilateurs
-OCC = ocamlopt -unsafe-string
+OCC = ocamlopt
 OCL = ocamllex
 OCY = ocamlyacc
 
 # Fichiers compilés, à produire pour fabriquer l'exécutable
-OBJS = izylex.cmx izyast.cmx izyparse.cmx izysem.cmx izyloop.cmx
+OBJS = izylex.cmx izyast.cmx izyparse.cmx izyloop.cmx
 
 izyloop: $(OBJS)
 	$(OCC) -o $@ $(OBJS)
@@ -22,8 +22,6 @@ izylex.cmx: izyparse.cmi
 izyparse.cmi: izyast.cmi
 
 izyparse.cmx: izyast.cmi
-
-izysem.cmx: izyast.cmi
 
 izyparse.mli: izyparse.ml
 

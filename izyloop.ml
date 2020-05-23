@@ -30,6 +30,8 @@ let main() =
       let e = Izyparse.main Izylex.lex lexbuf in
       let _ = Printf.printf "Recognized: " in
       let _ = Izyast.print stdout e in
+      let _ = Printf.fprintf stdout " =\n%!" in
+      let _ = Izysem.printval (Izysem.eval e) in
       Printf.printf "\n%!"
     with
       Izylex.Eoi -> Printf.printf  "Bye bye.\n%!" ; exit 0

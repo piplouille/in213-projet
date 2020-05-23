@@ -7,18 +7,23 @@ open Izyast;;
 type izyval =
   | Intval of int
   | Stringval of string
+  | Congruval of (izyval * izyval * izyval)
 
 and environment = (string * izyval) list
 ;;
 
 let rec printval = function
   | Intval n -> Printf.printf "%d" n
-  | Stringval s -> Printf.printf "%S" s
+  | Stringval s -> Printf.printf "%s" s
+  | Congruval (v, w, x) -> (match (v, w, x) with
+    (Intval n, Intval m, Intval p) -> Printf.printf "%d congru %d a %d" n m p
+    | _ -> Printf.printf "no way\n"
+  )
 ;;
 
 (* Environnement. *)
 let init_env = [] ;;
-
+"A FINIR"
 let error msg = raise (Failure msg) ;;
 
 let extend rho x v = (x, v) :: rho ;;
@@ -44,7 +49,11 @@ let rec eval e rho =
   | EString s -> Stringval s
   | EInt n -> Intval n
   | EIdent v -> Stringval v
-  | ECongruence (a, b, n) -> Stringval "A FINIR"
+  | ECongruence (a, b, n) -> (
+    match (a, b, n) with
+     (EInt a, EInt b, EInt n) -> Congruval (Intval a, Intval b, Intval n)
+    | _ -> Stringval "mauvais type pour les congruences"
+  )
   | EBinop (op, n, m) -> Stringval "A FINIR"
   | EMonop (op, n) -> Stringval "A FINIR"
   | EMatrice m -> Stringval "A FINIR"

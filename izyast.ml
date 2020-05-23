@@ -5,12 +5,12 @@ type expr =
     | EInt of int                               (* 1, 2, 3 *)
     | EIdent of string                          (* x, toto, fact *)
     | ECongruence of (expr * expr * expr)       (* expr congrue à expr modulo expr *)
-    (* | EDivisible of (expr * expr) *)
     | EBinop of (string * expr * expr)          (* + - = * / | *)
     | EMonop of (string * expr)                 (* - *)
     | EMatrice of expr list                     (* [ [1, 2, 3], [4, 5, 6] ] *)
     | ESuite of (expr * string * string)      (* (string)_string € string *)
     (* on pourrait ajouter la définition d'ensemble après !! *)
+    (* ajouter les équations : a = ... *)
 ;;
 
 (* extrait les lignes d'une matrice *)

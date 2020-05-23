@@ -43,7 +43,7 @@ let rec eval e rho =
   match e with
   | EString s -> Stringval s
   | EInt n -> Intval n
-  | EIdent v -> Stringval "A FINIR"
+  | EIdent v -> Stringval v
   | ECongruence (a, b, n) -> Stringval "A FINIR"
   | EBinop (op, n, m) -> Stringval "A FINIR"
   | EMonop (op, n) -> Stringval "A FINIR"

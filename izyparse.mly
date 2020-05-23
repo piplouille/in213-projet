@@ -34,7 +34,7 @@ main: FORMULE expr END SEMICOLON { $2 }
 
 expr:
   expr CONGRU expr MODULO expr { ECongruence ($1, $3, $5) }
-| LPAR expr RPAR IDENT APPARTIENT IDENT { ESuite ($2, $4, $6) }
+| LPAR expr RPAR STRING APPARTIENT STRING { ESuite ($2, $4, $6) }
 | STRING { EString ($1) }
 | LCRO in_matrice RCRO { EMatrice ($2) }
 | LCRO RCRO { EMatrice ([]) }

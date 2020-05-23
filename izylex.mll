@@ -57,7 +57,7 @@ rule lex = parse
              "congru" -> CONGRU
             | "modulo" -> MODULO
             | "dans" -> APPARTIENT
-            | _ -> IDENT(lxm)
+            | _ -> STRING(lxm)
         }
     | '('   { LPAR }
     | ')'   { RPAR }

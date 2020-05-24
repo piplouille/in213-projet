@@ -11,7 +11,7 @@ le parser, on définit ici tous nos mots
 %token <int> INT
 %token <string> IDENT
 %token CONGRU MODULO
-%token PLUS MINUS MULT DIV DIVISE EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
+%token PLUS MINUS MULT DIV PUI DIVISE EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
 %token LPAR RPAR LCRO RCRO SEMICOLON VIRGULE
 %token APPARTIENT
 %left EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
@@ -64,6 +64,7 @@ arith_expr:
 | arith_expr MULT arith_expr         { EBinop ("*", $1, $3) }
 | arith_expr DIV arith_expr          { EBinop ("/", $1, $3) }
 | arith_expr DIVISE arith_expr       { EBinop ("|", $1, $3) }
+| arith_expr PUI arith_expr       { EBinop ("^", $1, $3) }
 | application                        { $1 }
 ;
 

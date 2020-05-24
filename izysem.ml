@@ -27,7 +27,7 @@ let rec printval = function
     | _ -> Printf.printf "no way\n"
   )
   | Operatval (op, n, m) -> (printval n ; (match op with
-    | "=" -> Printf.printf "&%s&" op 
+    | "=" -> Printf.printf "&%s&" op
     | _ -> Printf.printf "%s" op 
     )  
     ; printval m)
@@ -58,7 +58,7 @@ let rec eval e rho =
   | ECongruence (a, b, n) -> Congruval(eval a rho, eval b rho, eval n rho)
   | EBinop (op, e1, e2) -> (
       match op with 
-      | "+" | "-" | "*" | "/" | "|" | "<" | ">" | "=" | "<=" | ">=" -> Operatval (op, eval e1 rho, eval e2 rho)
+      | "+" | "-" | "*" | "/" | "^" | "|" | "<" | ">" | "=" | "<=" | ">=" -> Operatval (op, eval e1 rho, eval e2 rho)
       | _ -> error (Printf.sprintf "Unknown binary op: %s" op)
      )
   | EMonop ("-", e) -> (

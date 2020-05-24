@@ -8,6 +8,7 @@ type izyval =
   | Intval of int
   | Stringval of string
   | Congruval of (izyval * izyval * izyval)
+  | Operatval of (stringval * izyval * izyval)
 
 and environment = (string * izyval) list
 ;;
@@ -16,8 +17,12 @@ let rec printval = function
   | Intval n -> Printf.printf "%d" n
   | Stringval s -> Printf.printf "%s" s
   | Congruval (v, w, x) -> (match (v, w, x) with
-    (Intval n, Intval m, Intval p) -> Printf.printf "%d congru %d a %d" n m p
+    (int n, int m, int p) -> Printf.printf "%d \equiv %d \pmod {%d}" n m p
     | _ -> Printf.printf "no way\n"
+  )
+  | Operatval (op, n, m) -> (
+    match (op, n, m) with
+    (op, int n, int m) -> Printf.printf "%d%s%d" n op m
   )
 ;;
 
@@ -33,29 +38,40 @@ let lookup var_name rho =
   with Not_found -> error (Printf.sprintf "Undefined ident '%s'" var_name)
 ;;
 
-(*| EString of string                          (* Le texte random du fichier *)
-    | EInt of int                               (* 1, 2, 3 *)
-    | EIdent of string                          (* x, toto, fact *)
-    | ECongruence of (expr * expr * expr)       (* expr congrue à expr modulo expr *)
-    (* | EDivisible of (expr * expr) *)
-    | EBinop of (string * expr * expr)          (* + - = * / | *)
-    | EMonop of (string * expr)                 (* - *)
-    | EMatrice of expr list                     (* [ [1, 2, 3], [4, 5, 6] ] *)
-    | ESuite of (e
-*)
-
 let rec eval e rho =
   match e with
   | EString s -> Stringval s
   | EInt n -> Intval n
   | EIdent v -> Stringval v
   | ECongruence (a, b, n) -> (
-    match (a, b, n) with
-     (EInt a, EInt b, EInt n) -> Congruval (Intval a, Intval b, Intval n)
+    match (eval a rho, eval b rho, eval n rho) with
+     (Intval a, Intval b, Intval n) -> Congruval (a, b, n)
     | _ -> Stringval "mauvais type pour les congruences"
   )
-  | EBinop (op, n, m) -> Stringval "A FINIR"
-  | EMonop (op, n) -> Stringval "A FINIR"
+  | EBinop (op, e1, e2) -> (
+      match (op, eval e1 rho, eval e2 rho) with
+      | ("+", Intval n1, Intval n2) -> Operatval ("+", n1, n2)
+      | ("-", Intval n1, Intval n2) -> Operatval ("-", n1, n2)
+      | ("*", Intval n1, Intval n2) -> Operatval ("*", n1, n2)
+      | ("/", Intval n1, Intval n2) -> Operatval ("/", n1, n2)
+      | ("|", Intval n1, Intval n2) -> Operatval ("|", n1, n2)
+      | ("<",  Intval n1, Intval n2) -> Operatval ("<", n1, n2)
+      | (">",  Intval n1, Intval n2) -> Operatval (">", n1, n2)
+      | ("=",  Intval n1, Intval n2) -> Operatval ("=", n1, n2)
+      | ("<=", Intval n1, Intval n2) -> Operatval ("<=", n1, n2)
+      | (">=", Intval n1, Intval n2) -> Operatval (">=", n1, n2)
+      | (("+"|"-"|"*"|"/"), _, _) ->
+          error "Arithmetic on non-integers"
+      | (("<"|">"|"="|"<="|">="), _, _) ->
+          error "Comparison of non-integers"
+      | _ -> error (Printf.sprintf "Unknown binary op: %s" op)
+     )
+  | EMonop ("-", e) -> (
+      match eval e rho with
+      | Intval n -> Intval (-n)
+      | _ -> error "Opposite of a non-integer"
+     )
+  | EMonop (op, _) -> error (Printf.sprintf "Unknown unary op: %s" op)
   | EMatrice m -> Stringval "A FINIR"
   | ESuite (u, n, e) -> Stringval "A FINIR"
 ;;

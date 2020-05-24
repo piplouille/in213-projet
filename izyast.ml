@@ -15,7 +15,6 @@ type expr =
 
 (* extrait les lignes d'une matrice *)
 let rec print_elem n = match n with
-    | expr list m -> print_matrice m
     | expr e -> print e
 ;;
 

@@ -14,10 +14,15 @@ type expr =
 ;;
 
 (* extrait les lignes d'une matrice *)
-(* let rec print_matrice m = match m with
+let rec print_elem n = match n with
+    | expr list m -> print_matrice m
+    | expr e -> print e
+;;
+
+let rec print_matrice m = match m with
     | [] -> ()
     | e::l -> print_int e ; print_string " " ; print_matrice l l
-;; *)
+;;
 
 let rec print oc = function
     | EString s -> Printf.fprintf oc "string \"%s\"" s

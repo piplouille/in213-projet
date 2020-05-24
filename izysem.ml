@@ -24,11 +24,7 @@ let rec printval = function
       )
     | _ -> Printf.printf "no way\n"
   )
-  | Operatval (op, n, m) -> (
-    match (op, n, m) with
-    | (op, Intval n, Intval m) -> Printf.printf "%d%s%d" n op m
-    | _ -> Printf.printf "no way"
-  )
+  | Operatval (op, n, m) -> (printval n ; Printf.printf "%s" op ; printval m)
 ;;
 
 (* Environnement. *)
@@ -50,21 +46,8 @@ let rec eval e rho =
   | EIdent v -> Stringval v
   | ECongruence (a, b, n) -> Congruval(eval a rho, eval b rho, eval n rho)
   | EBinop (op, e1, e2) -> (
-      match (op, eval e1 rho, eval e2 rho) with
-      | ("+", Intval n1, Intval n2) -> Operatval ("+", Intval n1, Intval n2)
-      | ("-", Intval n1, Intval n2) -> Operatval ("-", Intval n1, Intval n2)
-      | ("*", Intval n1, Intval n2) -> Operatval ("*", Intval n1, Intval n2)
-      | ("/", Intval n1, Intval n2) -> Operatval ("/", Intval n1, Intval n2)
-      | ("|", Intval n1, Intval n2) -> Operatval ("|", Intval n1, Intval n2)
-      | ("<",  Intval n1, Intval n2) -> Operatval ("<", Intval n1, Intval n2)
-      | (">",  Intval n1, Intval n2) -> Operatval (">", Intval n1, Intval n2)
-      | ("=",  Intval n1, Intval n2) -> Operatval ("=", Intval n1, Intval n2)
-      | ("<=", Intval n1, Intval n2) -> Operatval ("<=", Intval n1, Intval n2)
-      | (">=", Intval n1, Intval n2) -> Operatval (">=", Intval n1, Intval n2)
-      | (("+"|"-"|"*"|"/"), _, _) ->
-          error "Arithmetic on non-integers"
-      | (("<"|">"|"="|"<="|">="), _, _) ->
-          error "Comparison of non-integers"
+      match op with 
+      | "+" | "-" | "*" | "/" | "|" | "<" | ">" | "=" | "<=" | ">=" -> Operatval (op, eval e1 rho, eval e2 rho)
       | _ -> error (Printf.sprintf "Unknown binary op: %s" op)
      )
   | EMonop ("-", e) -> (

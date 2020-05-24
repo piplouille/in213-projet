@@ -53,6 +53,7 @@ let rec eval e rho =
   | EMonop ("-", e) -> (
       match eval e rho with
       | Intval n -> Intval (-n)
+      | Stringval n -> Stringval ("-"^n)
       | _ -> error "Opposite of a non-integer"
      )
   | EMonop (op, _) -> error (Printf.sprintf "Unknown unary op: %s" op)

@@ -67,7 +67,7 @@ rule lex = parse
     | "="   { EQUAL }
     | ">"   { GREATER} | "<"  { SMALLER }
     | ">="  { GREATEREQUAL} | "<="  { SMALLEREQUAL }
-    | "+"   { PLUS } | "-"   { MINUS } | "*" { MULT } | "^" {PUI} | "/" { DIV }
+    | "+"   { PLUS } | "-"   { MINUS } | "*" { MULT } | "^" {PUI} | "/" { DIV } | "|" { DIVISE }
     | eof   { raise Eoi }
     | _  as c { Printf.eprintf "Invalid char `%c'\n%!" c ; lex lexbuf }
 

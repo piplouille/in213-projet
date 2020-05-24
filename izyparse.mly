@@ -15,9 +15,9 @@ le parser, on définit ici tous nos mots
 %token LPAR RPAR LCRO RCRO SEMICOLON VIRGULE
 %token APPARTIENT
 %left EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
-%left PLUS MINUS
-%left MULT DIV
-%left DIVISE
+%right PLUS MINUS
+%right MULT DIV
+%right DIVISE
 
 %start main
 %type <Izyast.expr> main

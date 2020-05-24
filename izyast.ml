@@ -13,16 +13,6 @@ type expr =
     (* ajouter les équations : a = ... *)
 ;;
 
-(* extrait les lignes d'une matrice *)
-(*let rec print_elem n = match n with
-    | expr list m -> print_matrice m
-    | expr e -> print e
-;;*)
-
-(*let rec print_matrice m = match m with
-    | [] -> ()
-    | e::l -> print_int e ; print_string " " ; print_matrice l l
-;;*)
 
 let rec print oc = function
     | EString s -> Printf.fprintf oc "string \"%s\"" s
@@ -34,4 +24,17 @@ let rec print oc = function
     | EMonop (op,e) -> Printf.fprintf oc "monop %s%a" op print e
     | ESuite (u, n, e) -> Printf.fprintf oc "suite (%a)_%s€%s" print u n e
     | EMatrice m -> Printf.fprintf oc "matrice tentée"
+and
+
+print_matrice oc m = match m with
+(* extrait les lignes d'une matrice *)
+    | [] -> ()
+    | e::l -> print oc e ; Printf.fprintf oc " " ; print_matrice oc l
+    
+(* and
+
+print_elem oc n = match n with
+    | EString _ | EInt _ | EBinop _ | EMonop _ -> print oc n
+    | EMatrice m -> print_matrice oc m
+    | _ -> Printf.fprintf oc "Erreur de type de donénes dans matrice" *)
 ;;

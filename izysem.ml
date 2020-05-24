@@ -24,13 +24,13 @@ let rec printval = function
       then  (Printf.printf " \\pmod {%d}" p)
       else (Printf.printf " \\pmod %d" p)
       )
-    | _ -> Printf.printf "no way\n"
+    | _ -> (printval v ; Printf.printf " \\equiv " ; printval w ; Printf.printf " \\pmod {"; printval x ; Printf.printf "}")
   )
   | Operatval (op, n, m) -> (printval n ; (match op with
-    | "=" -> Printf.printf "&%s&" op
-    | _ -> Printf.printf "%s" op 
+    | "=" -> Printf.printf "&%s&{" op
+    | _ -> Printf.printf "%s{" op 
     )  
-    ; printval m)
+    ; printval m ; Printf.printf "}")
   | Suiteval (u, n, e) -> (Printf.printf "(" ; printval u ; Printf.printf "_{%s})_{%s\\in" n n; 
     (match e with
     | "N" | "R" | "C" | "Q" | "Z" -> Printf.printf "\\mathbb{%s}}" e

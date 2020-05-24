@@ -9,6 +9,7 @@ type izyval =
   | Stringval of string
   | Congruval of (izyval * izyval * izyval)
   | Operatval of (string * izyval * izyval)
+  | Suiteval of (izyval * string * string)
 
 and environment = (string * izyval) list
 ;;
@@ -18,13 +19,19 @@ let rec printval = function
   | Stringval s -> Printf.printf "%s" s
   | Congruval (v, w, x) -> (match (v, w, x) with
     (n, m, Intval p) -> (
+      printval n ; Printf.printf " \\equiv " ; printval m ;
       if p >= 10
-      then (printval n ; Printf.printf " \\equiv " ; printval m ; Printf.printf " \\pmod {%d}" p)
-      else (printval n ; Printf.printf " \\equiv " ; printval m ; Printf.printf " \\pmod %d" p)
+      then  (Printf.printf " \\pmod {%d}" p)
+      else (Printf.printf " \\pmod %d" p)
       )
     | _ -> Printf.printf "no way\n"
   )
-  | Operatval (op, n, m) -> (printval n ; Printf.printf "%s" op ; printval m)
+  | Operatval (op, n, m) -> (printval n ; (match op with
+    | "=" -> Printf.printf "&%s&" op 
+    | _ -> Printf.printf "%s" op 
+    )  
+    ; printval m)
+  | Suiteval (u, n, e) -> ()
 ;;
 
 (* Environnement. *)
@@ -54,11 +61,11 @@ let rec eval e rho =
       match eval e rho with
       | Intval n -> Intval (-n)
       | Stringval n -> Stringval ("-"^n)
-      | _ -> error "Opposite of a non-integer"
+      | _ -> error "Opposite of a bad type"
      )
   | EMonop (op, _) -> error (Printf.sprintf "Unknown unary op: %s" op)
   | EMatrice m -> Stringval "A FINIR"
-  | ESuite (u, n, e) -> Stringval "A FINIR"
+  | ESuite (u, n, e) -> Suiteval (eval u rho, n, e)
 ;;
 
 let eval e = eval e init_env ;;

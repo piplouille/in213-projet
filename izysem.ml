@@ -8,7 +8,7 @@ type izyval =
   | Intval of int
   | Stringval of string
   | Congruval of (izyval * izyval * izyval)
-  | Operatval of (stringval * izyval * izyval)
+  | Operatval of (string * izyval * izyval)
 
 and environment = (string * izyval) list
 ;;
@@ -17,12 +17,16 @@ let rec printval = function
   | Intval n -> Printf.printf "%d" n
   | Stringval s -> Printf.printf "%s" s
   | Congruval (v, w, x) -> (match (v, w, x) with
-    (int n, int m, int p) -> Printf.printf "%d \equiv %d \pmod {%d}" n m p
-    | _ -> Printf.printf "no way\n"
+    (Intval n, Intval m, Intval p) -> (
+      if p >= 10
+      then Printf.printf "%d \\equiv %d \\pmod {%d}" n m p
+      else Printf.printf "%d \\equiv %d \\pmod %d" n m p)
+  | _ -> Printf.printf "no way\n"
   )
   | Operatval (op, n, m) -> (
     match (op, n, m) with
-    (op, int n, int m) -> Printf.printf "%d%s%d" n op m
+    | (op, Intval n, Intval m) -> Printf.printf "%d%s%d" n op m
+    | _ -> Printf.printf "no way\n"
   )
 ;;
 
@@ -45,21 +49,21 @@ let rec eval e rho =
   | EIdent v -> Stringval v
   | ECongruence (a, b, n) -> (
     match (eval a rho, eval b rho, eval n rho) with
-     (Intval a, Intval b, Intval n) -> Congruval (a, b, n)
+     (Intval a, Intval b, Intval n) -> Congruval (Intval a, Intval b, Intval n)
     | _ -> Stringval "mauvais type pour les congruences"
   )
   | EBinop (op, e1, e2) -> (
       match (op, eval e1 rho, eval e2 rho) with
-      | ("+", Intval n1, Intval n2) -> Operatval ("+", n1, n2)
-      | ("-", Intval n1, Intval n2) -> Operatval ("-", n1, n2)
-      | ("*", Intval n1, Intval n2) -> Operatval ("*", n1, n2)
-      | ("/", Intval n1, Intval n2) -> Operatval ("/", n1, n2)
-      | ("|", Intval n1, Intval n2) -> Operatval ("|", n1, n2)
-      | ("<",  Intval n1, Intval n2) -> Operatval ("<", n1, n2)
-      | (">",  Intval n1, Intval n2) -> Operatval (">", n1, n2)
-      | ("=",  Intval n1, Intval n2) -> Operatval ("=", n1, n2)
-      | ("<=", Intval n1, Intval n2) -> Operatval ("<=", n1, n2)
-      | (">=", Intval n1, Intval n2) -> Operatval (">=", n1, n2)
+      | ("+", Intval n1, Intval n2) -> Operatval ("+", Intval n1, Intval n2)
+      | ("-", Intval n1, Intval n2) -> Operatval ("-", Intval n1, Intval n2)
+      | ("*", Intval n1, Intval n2) -> Operatval ("*", Intval n1, Intval n2)
+      | ("/", Intval n1, Intval n2) -> Operatval ("/", Intval n1, Intval n2)
+      | ("|", Intval n1, Intval n2) -> Operatval ("|", Intval n1, Intval n2)
+      | ("<",  Intval n1, Intval n2) -> Operatval ("<", Intval n1, Intval n2)
+      | (">",  Intval n1, Intval n2) -> Operatval (">", Intval n1, Intval n2)
+      | ("=",  Intval n1, Intval n2) -> Operatval ("=", Intval n1, Intval n2)
+      | ("<=", Intval n1, Intval n2) -> Operatval ("<=", Intval n1, Intval n2)
+      | (">=", Intval n1, Intval n2) -> Operatval (">=", Intval n1, Intval n2)
       | (("+"|"-"|"*"|"/"), _, _) ->
           error "Arithmetic on non-integers"
       | (("<"|">"|"="|"<="|">="), _, _) ->

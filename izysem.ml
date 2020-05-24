@@ -17,22 +17,23 @@ let rec printval = function
   | Intval n -> Printf.printf "%d" n
   | Stringval s -> Printf.printf "%s" s
   | Congruval (v, w, x) -> (match (v, w, x) with
-    (Intval n, Intval m, Intval p) -> (
+    (n, m, Intval p) -> (
       if p >= 10
-      then Printf.printf "%d \\equiv %d \\pmod {%d}" n m p
-      else Printf.printf "%d \\equiv %d \\pmod %d" n m p)
-  | _ -> Printf.printf "no way\n"
+      then (printval n ; Printf.printf " \\equiv " ; printval m ; Printf.printf " \\pmod {%d}" p)
+      else (printval n ; Printf.printf " \\equiv " ; printval m ; Printf.printf " \\pmod %d" p)
+      )
+    | _ -> Printf.printf "no way\n"
   )
   | Operatval (op, n, m) -> (
     match (op, n, m) with
     | (op, Intval n, Intval m) -> Printf.printf "%d%s%d" n op m
-    | _ -> Printf.printf "no way\n"
+    | _ -> Printf.printf "no way"
   )
 ;;
 
 (* Environnement. *)
 let init_env = [] ;;
-"A FINIR"
+
 let error msg = raise (Failure msg) ;;
 
 let extend rho x v = (x, v) :: rho ;;
@@ -47,11 +48,7 @@ let rec eval e rho =
   | EString s -> Stringval s
   | EInt n -> Intval n
   | EIdent v -> Stringval v
-  | ECongruence (a, b, n) -> (
-    match (eval a rho, eval b rho, eval n rho) with
-     (Intval a, Intval b, Intval n) -> Congruval (Intval a, Intval b, Intval n)
-    | _ -> Stringval "mauvais type pour les congruences"
-  )
+  | ECongruence (a, b, n) -> Congruval(eval a rho, eval b rho, eval n rho)
   | EBinop (op, e1, e2) -> (
       match (op, eval e1 rho, eval e2 rho) with
       | ("+", Intval n1, Intval n2) -> Operatval ("+", Intval n1, Intval n2)

@@ -7,7 +7,7 @@ type expr =
     | ECongruence of (expr * expr * expr)       (* expr congrue à expr modulo expr *)
     | EBinop of (string * expr * expr)          (* + - = * / | *)
     | EMonop of (string * expr)                 (* - *)
-    | EMatrice of expr list                     (* [ [1, 2, 3], [4, 5, 6] ] *)
+    | EMatrice of (expr list)                     (* [ [1, 2, 3], [4, 5, 6] ] *)
     | ESuite of (expr * string * string)      (* (string)_string € string *)
     (* on pourrait ajouter la définition d'ensemble après !! *)
     (* ajouter les équations : a = ... *)
@@ -23,18 +23,18 @@ let rec print oc = function
         Printf.fprintf oc "binop (%a %s %a)" print e1 op print e2
     | EMonop (op,e) -> Printf.fprintf oc "monop %s%a" op print e
     | ESuite (u, n, e) -> Printf.fprintf oc "suite (%a)_%s€%s" print u n e
-    | EMatrice m -> Printf.fprintf oc "matrice tentée"
+    | EMatrice m -> print_matrice oc m
 and
 
 print_matrice oc m = match m with
 (* extrait les lignes d'une matrice *)
     | [] -> ()
-    | e::l -> print oc e ; Printf.fprintf oc " " ; print_matrice oc l
+    | e::l -> print_elem oc e ; Printf.fprintf oc "|" ; print_matrice oc l
     
-(* and
+and
 
 print_elem oc n = match n with
-    | EString _ | EInt _ | EBinop _ | EMonop _ -> print oc n
-    | EMatrice m -> print_matrice oc m
-    | _ -> Printf.fprintf oc "Erreur de type de donénes dans matrice" *)
+    | EString _ | EInt _ | EBinop _ | EMonop _ -> Printf.fprintf oc "," ; print oc n
+    | EMatrice m -> Printf.fprintf oc "[" ; print_matrice oc m ; Printf.fprintf oc "]"
+    | _ -> Printf.fprintf oc "Erreur de type de donénes dans matrice"
 ;;

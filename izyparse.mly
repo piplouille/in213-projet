@@ -49,7 +49,7 @@ in_matrice:
 liste:
   application VIRGULE liste { ($1::$3) }
 | application { [$1] }
-| LCRO liste RCRO VIRGULE liste { ((EMatrice ($2))::$5) }
+| LCRO liste RCRO VIRGULE liste { [EMatrice ($2); EMatrice($5)] }
 | LCRO liste RCRO { $2 }
 ;
 

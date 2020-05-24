@@ -31,8 +31,12 @@ let rec printval = function
     | _ -> Printf.printf "%s" op 
     )  
     ; printval m)
-  | Suiteval (u, n, e) -> ()
-;;
+  | Suiteval (u, n, e) -> (Printf.printf "(" ; printval u ; Printf.printf "_{%s})_{%s\\in" n n; 
+    (match e with
+    | "N" | "R" | "C" | "Q" | "Z" -> Printf.printf "\\mathbb{%s}}" e
+    | _ -> Printf.printf " %s}" e)
+  )
+  ;;
 
 (* Environnement. *)
 let init_env = [] ;;

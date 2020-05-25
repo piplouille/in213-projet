@@ -9,7 +9,6 @@ le parser, on définit ici tous nos mots
 %token FORMULE END
 %token <string> STRING
 %token <int> INT
-%token <string> IDENT
 %token CONGRU MODULO
 %token PLUS MINUS MULT DIV PUI DIVISE EQUAL GREATER SMALLER GREATEREQUAL SMALLEREQUAL
 %token LPAR RPAR LCRO RCRO SEMICOLON VIRGULE
@@ -24,9 +23,9 @@ le parser, on définit ici tous nos mots
 
 %%
 
-main: FORMULE expr END SEMICOLON { $2 }
-    | STRING SEMICOLON { EString ($1) }
-    | SEMICOLON main { $2 }
+main: FORMULE expr END { $2 }
+    | STRING { EString ($1) }
+    | END main { $2 }
 ;
 
 
@@ -82,6 +81,5 @@ application:
 atom:
   INT            { EInt ($1) }
 | STRING         { EString ($1) }
-| IDENT          { EIdent ($1) }
 | LPAR expr RPAR { $2 }
 ;

@@ -39,32 +39,30 @@ let rec printval = function
     | "N" | "R" | "C" | "Q" | "Z" -> Printf.printf "\\mathbb{%s}}" e
     | _ -> Printf.printf " %s}" e)
   )
-  | Matrice1Dval m -> print_matrice stdout m
+  | Matrice1Dval m -> Printf.printf "\\begin{bmatrix}\n" ; print_matrice1D stdout m ; Printf.printf "\\end{bmatrix}"
+  | Matrice2Dval m -> Printf.printf "\\begin{bmatrix}\n" ; print_matrice2D stdout m ; Printf.printf "\\end{bmatrix}" 
 and
 
-print_matrice oc m = 
-  Printf.fprintf oc "DEBUT " ;
+print_matrice2D oc m = 
   match m with
-(* extrait les lignes d'une matrice *)
+  (* extrait les lignes d'une matrice *)
   | [] -> ()
-  | e::l -> print_ligne oc e
-  (* | e::l -> print_elem oc e ; (if l=[] then Printf.fprintf oc "\\" else ()) ; print_matrice oc l *)
-  ;
-  Printf.fprintf oc "FIN"
+  | l::q -> print_ligne oc l ; print_matrice2D oc q
+
+and
+print_matrice1D oc m = 
+  match m with
+  | [] -> ()
+  | e::l -> print_elem oc e ; if l = [] then () else Printf.fprintf oc "& "; print_matrice1D oc l
     
 and
-
 print_ligne oc l = match l with
-  | _ -> Printf.fprintf oc "LIGNE "
+  | _ -> print_matrice1D oc l ; Printf.fprintf oc "\\\\\n"
 
-(* and
-
-print_elem oc n = match n with
-    | Stringval _ -> printval n
-    | Intval _ -> printval n
-    | Operatval _ -> printval n
-    | Matriceval m -> Printf.fprintf oc "[" ; print_matrice oc m ; Printf.fprintf oc "]"
-    | _ -> Printf.fprintf oc "Erreur de type de donénes dans matrice" *)
+and
+print_elem oc e = match e with
+  | Stringval _ | Intval _ | Operatval _ -> printval e ; Printf.fprintf oc " "
+  | _ -> Printf.fprintf oc "ELEM "
 ;;
 
 (* Environnement. *)
@@ -83,7 +81,6 @@ let rec eval e rho =
   match e with
   | EString s -> Stringval s
   | EInt n -> Intval n
-  | EIdent v -> Stringval v
   | ECongruence (a, b, n) -> Congruval(eval a rho, eval b rho, eval n rho)
   | EBinop (op, e1, e2) -> (
       match op with 
@@ -103,16 +100,17 @@ let rec eval e rho =
 and
 extrait_matrice m rho =
   match m with
-  | [] -> Printf.printf "Je suis une matrice vide" ; Intval 1
+  | [] -> Matrice1Dval ([])
   | l::q -> (
     match l with
-    | EMatrice _ -> Printf.printf "Je suis une matrice 2D" ; Matrice2Dval (extrait_table m rho)
-    | _ -> Printf.printf "Je suis une matrice 1D" ; Matrice1Dval (extrait_liste m rho)
+    | EMatrice _ -> Matrice2Dval (extrait_table m rho)
+    | _ -> Matrice1Dval (extrait_liste m rho)
   )
 
 and
 extrait_liste m rho =
   match m with
+  | [] -> []
   | l::q -> 
     if q = [] then [eval l rho] else (match l with 
     | EString _ | EInt _ | EBinop _ | EMonop _ -> (eval l rho)::(extrait_liste q rho)
@@ -121,8 +119,14 @@ extrait_liste m rho =
 
 and
 extrait_table m rho =
-
-
+  match m with
+  | [] -> []
+  | l::q -> (
+    (match l with
+    | EMatrice l -> extrait_liste l rho::extrait_table q rho
+    | _ -> []
+    )
+  )
 
 ;;
 

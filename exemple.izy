@@ -1,0 +1,10 @@
+"J'écris mon texte"
+/formule a = 1 + 3 /end
+"Je réécris du texte"
+/formule [1,2,3] /end
+/formule [[1,2],[3,4]] /end
+"Il n'y a pas de vérification pour les tailles de matrice .. le LaTeX risque de râler sur les longueurs de lignes"
+/formule x^n congru 2 modulo 10 /end
+/formule x^(n+2*m) congru 2 modulo 4 /end
+
+"Ecrire du texte" /formule 1 +2 /end "et puis continuer"

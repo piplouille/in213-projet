@@ -10,9 +10,11 @@ type izyval =
   | Congruval of (izyval * izyval * izyval)
   | Operatval of (string * izyval * izyval)
   | Suiteval of (izyval * string * string)
+  | Matriceval of izyval list
 
 and environment = (string * izyval) list
 ;;
+
 
 let rec printval = function
   | Intval n -> Printf.printf "%d" n
@@ -36,7 +38,23 @@ let rec printval = function
     | "N" | "R" | "C" | "Q" | "Z" -> Printf.printf "\\mathbb{%s}}" e
     | _ -> Printf.printf " %s}" e)
   )
-  ;;
+  | Matriceval m -> print_matrice stdout m
+and
+
+print_matrice oc m = match m with
+(* extrait les lignes d'une matrice *)
+    | [] -> ()
+    | e::l -> print_elem oc e ; (if l=[] then Printf.fprintf oc "\\" else ()) ; print_matrice oc l
+    
+and
+
+print_elem oc n = match n with
+    | Stringval _ -> printval n
+    | Intval _ -> printval n
+    | Operatval _ -> printval n
+    | Matriceval m -> Printf.fprintf oc "[" ; print_matrice oc m ; Printf.fprintf oc "]"
+    | _ -> Printf.fprintf oc "Erreur de type de donénes dans matrice"
+;;
 
 (* Environnement. *)
 let init_env = [] ;;
@@ -68,8 +86,32 @@ let rec eval e rho =
       | _ -> error "Opposite of a bad type"
      )
   | EMonop (op, _) -> error (Printf.sprintf "Unknown unary op: %s" op)
-  | EMatrice m -> Stringval "A FINIR"
+  | EMatrice m -> extrait_matrice m rho
   | ESuite (u, n, e) -> Suiteval (eval u rho, n, e)
+
+and
+extrait_matrice m rho =
+  match m with
+  | [] -> Matriceval []
+  | l::q -> Matriceval [(extrait_ligne l rho);(extrait_matrice q rho)]
+
+and
+extrait_ligne l rho =
+  match l with
+  | EMatrice m -> extrait_matrice m rho
+  | EString _ | EInt _ | EBinop _ | EMonop _ -> eval l rho
+  | _ -> error (Printf.sprintf "mauvais type dans matrice")
+
+(* and
+extrait_matrice m rho r =
+  match m with
+  | [] -> Matriceval []
+  | l::q -> extrait_matrice q rho r::(extrait_ligne l rho [])
+
+and extrait_ligne l rho p =
+  match l with
+  | EMatrice m -> extrait_matrice m rho p
+  | _ -> [p;eval l rho] *)
 ;;
 
 let eval e = eval e init_env ;;

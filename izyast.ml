@@ -23,10 +23,23 @@ let rec print oc = function
         Printf.fprintf oc "binop (%a %s %a)" print e1 op print e2
     | EMonop (op,e) -> Printf.fprintf oc "monop %s%a" op print e
     | ESuite (u, n, e) -> Printf.fprintf oc "suite (%a)_%s€%s" print u n e
-    | EMatrice m -> print_matrice oc m
+    | EMatrice m -> Printf.fprintf oc "matrice " ; print_matrice oc m
 and
 
 print_matrice oc m = match m with
+(* extrait les lignes d'une matrice *)
+    | [] -> ()
+    | e::l -> print_elem oc e ; (if l=[] then Printf.fprintf oc "\\" else ()) ; print_matrice oc l
+    
+and
+
+print_elem oc n = match n with
+    | EString _ | EInt _ | EBinop _ | EMonop _ -> print oc n
+    | EMatrice m -> Printf.fprintf oc "[" ; print_matrice oc m ; Printf.fprintf oc "]"
+    | _ -> Printf.fprintf oc "Erreur de type de donénes dans matrice"
+;;
+
+(* print_matrice oc m = match m with
 (* extrait les lignes d'une matrice *)
     | [] -> ()
     | e::l -> print_elem oc e ; Printf.fprintf oc "|" ; print_matrice oc l
@@ -37,4 +50,4 @@ print_elem oc n = match n with
     | EString _ | EInt _ | EBinop _ | EMonop _ -> Printf.fprintf oc "," ; print oc n
     | EMatrice m -> Printf.fprintf oc "[" ; print_matrice oc m ; Printf.fprintf oc "]"
     | _ -> Printf.fprintf oc "Erreur de type de donénes dans matrice"
-;;
+;; *)

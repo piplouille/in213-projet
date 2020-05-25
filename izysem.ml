@@ -10,7 +10,8 @@ type izyval =
   | Congruval of (izyval * izyval * izyval)
   | Operatval of (string * izyval * izyval)
   | Suiteval of (izyval * string * string)
-  | Matriceval of izyval list
+  | Matrice1Dval of izyval list
+  | Matrice2Dval of izyval list list
 
 and environment = (string * izyval) list
 ;;
@@ -38,22 +39,32 @@ let rec printval = function
     | "N" | "R" | "C" | "Q" | "Z" -> Printf.printf "\\mathbb{%s}}" e
     | _ -> Printf.printf " %s}" e)
   )
-  | Matriceval m -> print_matrice stdout m
+  | Matrice1Dval m -> print_matrice stdout m
 and
 
-print_matrice oc m = match m with
+print_matrice oc m = 
+  Printf.fprintf oc "DEBUT " ;
+  match m with
 (* extrait les lignes d'une matrice *)
-    | [] -> ()
-    | e::l -> print_elem oc e ; (if l=[] then Printf.fprintf oc "\\" else ()) ; print_matrice oc l
+  | [] -> ()
+  | e::l -> print_ligne oc e
+  (* | e::l -> print_elem oc e ; (if l=[] then Printf.fprintf oc "\\" else ()) ; print_matrice oc l *)
+  ;
+  Printf.fprintf oc "FIN"
     
 and
+
+print_ligne oc l = match l with
+  | _ -> Printf.fprintf oc "LIGNE "
+
+(* and
 
 print_elem oc n = match n with
     | Stringval _ -> printval n
     | Intval _ -> printval n
     | Operatval _ -> printval n
     | Matriceval m -> Printf.fprintf oc "[" ; print_matrice oc m ; Printf.fprintf oc "]"
-    | _ -> Printf.fprintf oc "Erreur de type de donénes dans matrice"
+    | _ -> Printf.fprintf oc "Erreur de type de donénes dans matrice" *)
 ;;
 
 (* Environnement. *)
@@ -92,26 +103,27 @@ let rec eval e rho =
 and
 extrait_matrice m rho =
   match m with
-  | [] -> Matriceval []
-  | l::q -> Matriceval [(extrait_ligne l rho);(extrait_matrice q rho)]
+  | [] -> Printf.printf "Je suis une matrice vide" ; Intval 1
+  | l::q -> (
+    match l with
+    | EMatrice _ -> Printf.printf "Je suis une matrice 2D" ; Matrice2Dval (extrait_table m rho)
+    | _ -> Printf.printf "Je suis une matrice 1D" ; Matrice1Dval (extrait_liste m rho)
+  )
 
 and
-extrait_ligne l rho =
-  match l with
-  | EMatrice m -> extrait_matrice m rho
-  | EString _ | EInt _ | EBinop _ | EMonop _ -> eval l rho
-  | _ -> error (Printf.sprintf "mauvais type dans matrice")
-
-(* and
-extrait_matrice m rho r =
+extrait_liste m rho =
   match m with
-  | [] -> Matriceval []
-  | l::q -> extrait_matrice q rho r::(extrait_ligne l rho [])
+  | l::q -> 
+    if q = [] then [eval l rho] else (match l with 
+    | EString _ | EInt _ | EBinop _ | EMonop _ -> (eval l rho)::(extrait_liste q rho)
+    | _ -> error (Printf.sprintf "mauvais type dans matrice")
+  )
 
-and extrait_ligne l rho p =
-  match l with
-  | EMatrice m -> extrait_matrice m rho p
-  | _ -> [p;eval l rho] *)
+and
+extrait_table m rho =
+
+
+
 ;;
 
 let eval e = eval e init_env ;;

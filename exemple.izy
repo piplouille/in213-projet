@@ -5,6 +5,7 @@
 /formule [[1,2],[3,4]] /end
 "Il n'y a pas de vérification pour les tailles de matrice .. le LaTeX risque de râler sur les longueurs de lignes"
 /formule x^n congru 2 modulo 10 /end
+"Et il manque l'ajout des dollars, je ne sais pas comment le faire facilement.."
 /formule x^(n+2*m) congru 2 modulo 4 /end
-
 "Ecrire du texte" /formule 1 +2 /end "et puis continuer"
+/formule (suite) indice dans ensemble /end

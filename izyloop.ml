@@ -22,7 +22,7 @@ let main() =
         end
     | n -> usage()
   in
-  let _ = Printf.printf "        Welcome to izy, the langage qui facilite la vie, version %s\n%!" version in
+  let _ = Printf.printf "        Welcome to izy, the langage qui facilite la vie, version %s\n%!\n" version in
   let lexbuf = Lexing.from_channel input_channel in
   while true do
     try
@@ -34,7 +34,7 @@ let main() =
       let _ = Izysem.printval (Izysem.eval e) in
       Printf.printf "\n%!"
     with
-      Izylex.Eoi -> Printf.printf  "Bye bye.\n%!" ; exit 0
+      Izylex.Eoi -> Printf.printf  "\n      Bye bye.\n%!" ; exit 0
     | Failure msg -> Printf.printf "Erreur: %s\n\n" msg
     | Parsing.Parse_error -> Printf.printf "Erreur de syntaxe\n\n"
   done
